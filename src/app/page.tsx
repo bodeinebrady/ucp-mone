@@ -1,8 +1,9 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Sean Brady — Docker Hub UX prototypes",
-  description: "Interactive Docker Hub UX prototypes: storage cleanup and pull analytics.",
+  title: "Sean Brady — Hub Monetization",
+  description:
+    "Monetizing Docker Hub's pull and storage usage — surfacing usage, showing consumption, and giving admins the tools to clean house.",
 };
 
 // If set, the brand + pill + footer "Back" link out to the portfolio; when empty
@@ -82,12 +83,12 @@ export default function LandingPage() {
 
       <div className="bold-wrap">
         <header className="bold-hero">
-          <p className="bold-eyebrow">Selected prototypes — 2026</p>
-          <h1 className="bold-title">Docker Hub, reimagined</h1>
+          <p className="bold-eyebrow">Lead Product Designer · Docker Hub · 2024</p>
+          <h1 className="bold-title">Hub Monetization</h1>
           <p className="bold-lead">
-            Two interactive UX explorations for Docker Hub — <b>storage cleanup</b> and{" "}
-            <b>pull analytics</b> — rebuilt as living prototypes with real, working
-            interactions. Pick one to dive in.
+            Turning Hub's <b>5.5 PB of daily pulls</b> and <b>21 PB of private storage</b>{" "}
+            into revenue by surfacing usage, showing consumption, and giving admins tools
+            to clean house, without alarming the 97% of users who were never affected.
           </p>
         </header>
 
@@ -122,7 +123,7 @@ export default function LandingPage() {
         ) : (
           <span className="bold-footer-back">← Back</span>
         )}
-        <span className="bold-footer-meta">Sean Brady · Docker Hub · 2026</span>
+        <span className="bold-footer-meta">Sean Brady · Hub Monetization · 2024</span>
       </footer>
     </div>
   );
