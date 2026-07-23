@@ -1,4 +1,4 @@
-import { ArrowUpIcon, LockIcon, PlusIcon, VerifiedBadge } from "./icons";
+import { LockIcon, PlusIcon, VerifiedBadge } from "./icons";
 
 const TABS = [
   "General",
@@ -47,9 +47,8 @@ export function RepoHeader() {
           </button>
         </div>
 
-        <button className="inline-flex shrink-0 items-center gap-2 rounded-md bg-docker-blue px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-docker-blue-dark">
+        <button className="inline-flex shrink-0 items-center rounded-md bg-docker-blue px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-docker-blue-dark">
           Push a new tag
-          <ArrowUpIcon className="h-4 w-4" />
         </button>
       </div>
 
