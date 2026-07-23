@@ -1,216 +1,129 @@
-"use client";
+import Link from "next/link";
 
-import { useCallback, useMemo, useState } from "react";
-import { AppSidebar } from "@/components/AppSidebar";
-import { TopNav } from "@/components/TopNav";
-import { RepoHeader } from "@/components/RepoHeader";
-import { StorageOverview } from "@/components/StorageOverview";
-import { SuggestedCleanup } from "@/components/SuggestedCleanup";
-import { DigestList } from "@/components/DigestList";
-import { DeleteModal, type DeletePlan } from "@/components/DeleteModal";
-import { Toast } from "@/components/Toast";
-import { Footer } from "@/components/Footer";
-import {
-  digests as initialDigests,
-  suggestedCleanup as initialSuggested,
-  categoryOf,
-  formatSize,
-  ACTIVE_STORAGE_MB,
-  STAT_COUNTS,
-  STORAGE_TOTAL_MB,
-  type Category,
-  type Digest,
-  type SuggestedItem,
-} from "@/lib/data";
-
-type CategoryTotals = Record<Category, number>;
-
-/** The removal to apply when a delete is confirmed — kept separate from the
- *  modal's presentational `DeletePlan`. Metrics/storage are derived, not tracked. */
-interface PendingAction {
-  removeDigestIds?: string[];
-  removeSuggestedId?: string;
-  freedMB: number;
-}
-
-const uniqueTags = (rows: { tags: string[] }[]) => {
-  const seen = new Set<string>();
-  const out: string[] = [];
-  for (const r of rows) {
-    for (const t of r.tags) {
-      if (!seen.has(t)) {
-        seen.add(t);
-        out.push(t);
-      }
-    }
-  }
-  return out;
+export const metadata = {
+  title: "Sean Brady — Docker Hub UX prototypes",
+  description: "Interactive Docker Hub UX prototypes: storage cleanup and pull analytics.",
 };
 
-export default function Home() {
-  const [rows, setRows] = useState<Digest[]>(initialDigests);
-  const [suggested, setSuggested] = useState<SuggestedItem[]>(initialSuggested);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [plan, setPlan] = useState<DeletePlan | null>(null);
-  const [pending, setPending] = useState<PendingAction | null>(null);
-  const [toast, setToast] = useState<React.ReactNode | null>(null);
+// If set, the brand + pill + footer "Back" link out to the portfolio; when empty
+// they render inert (no navigation), per spec.
+const PORTFOLIO_URL = "";
 
-  // Metrics and storage are derived from the images that actually exist, so any
-  // deletion is reflected automatically — deleting every image drives the
-  // reclaimable categories to zero. Active images are a fixed, non-deletable base.
-  const counts = useMemo<CategoryTotals>(() => {
-    const c: CategoryTotals = {
-      active: STAT_COUNTS.active,
-      ready: suggested.length,
-      partial: 0,
-    };
-    for (const d of rows) c[categoryOf(d)] += 1;
-    return c;
-  }, [rows, suggested]);
+// Design tokens — single source of truth for the bold design system.
+const T = {
+  display: "'Tanker', sans-serif",
+  sans: "'Cabinet Grotesk', 'Inter', system-ui, sans-serif",
+  red: "#EE3F54",
+  ink: "#1C1C1C",
+  lime: "#B6D81F",
+  purple: "#8C4DFF",
+  paper: "#fff",
+  ease: "cubic-bezier(.22,1,.36,1)",
+};
 
-  const storage = useMemo<CategoryTotals>(() => {
-    const s: CategoryTotals = { active: ACTIVE_STORAGE_MB, ready: 0, partial: 0 };
-    for (const d of rows) s[categoryOf(d)] += d.sizeMB;
-    for (const item of suggested) s.ready += item.sizeMB;
-    return s;
-  }, [rows, suggested]);
+const css = `
+.bold-root{
+  --display:${T.display};--sans:${T.sans};--red:${T.red};--ink:${T.ink};
+  --lime:${T.lime};--purple:${T.purple};--paper:${T.paper};--ease:${T.ease};
+  background:var(--paper);color:var(--ink);min-height:100vh;font-family:var(--sans);
+  font-weight:500;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.bold-root a{color:inherit;text-decoration:none}
+.bold-nav{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px clamp(20px,3vw,46px);background:rgba(255,255,255,.82);backdrop-filter:blur(12px) saturate(1.1);-webkit-backdrop-filter:blur(12px) saturate(1.1);border-bottom:2px solid var(--ink)}
+.bold-brand{font-family:var(--display);font-size:clamp(24px,2.2vw,32px);line-height:1;letter-spacing:-.01em;text-transform:uppercase;color:var(--ink)}
+.bold-pill{border:2px solid var(--ink);border-radius:99px;padding:12px 26px;font-family:var(--sans);font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:13px;background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap;transition:background .2s var(--ease),color .2s var(--ease)}
+.bold-pill:hover{background:var(--ink);color:var(--red)}
+.bold-wrap{max-width:1440px;margin:0 auto;padding:0 clamp(20px,3vw,46px)}
+.bold-hero{padding:clamp(130px,20vh,220px) 0 clamp(48px,8vh,90px)}
+.bold-eyebrow{font-family:var(--sans);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:12px;opacity:.55;margin:0 0 clamp(20px,3vh,34px)}
+.bold-title{font-family:var(--display);text-transform:uppercase;font-weight:400;line-height:.85;letter-spacing:-.02em;font-size:clamp(52px,9vw,150px);margin:0}
+.bold-lead{font-family:var(--sans);font-weight:500;font-size:clamp(17px,1.5vw,22px);line-height:1.4;letter-spacing:-.01em;max-width:44ch;margin:clamp(28px,4vh,44px) 0 0}
+.bold-lead b{font-weight:800}
+.bold-section{margin-bottom:clamp(40px,7vh,80px)}
+.bold-sublabel{font-family:var(--sans);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:12px;opacity:.5;margin:0 0 8px}
+.bold-rows{display:flex;flex-direction:column}
+.bold-case{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(20px,3vw,48px);align-items:center;padding:clamp(26px,4vh,50px) clamp(4px,1vw,16px);border-top:2px solid var(--ink);color:var(--ink);transition:background .4s var(--ease),color .4s var(--ease)}
+.bold-rows .bold-case:last-child{border-bottom:2px solid var(--ink)}
+.bold-case:hover{background:var(--ink);color:var(--red)}
+.bold-ct{display:block;font-family:var(--display);text-transform:uppercase;font-weight:400;letter-spacing:-.02em;line-height:.85;font-size:clamp(28px,4.4vw,58px);transition:transform .4s var(--ease)}
+.bold-case:hover .bold-ct{transform:translateX(18px)}
+.bold-cd{font-family:var(--sans);font-weight:500;font-size:14px;line-height:1.5;letter-spacing:-.005em;margin:0;opacity:.85}
+@media(max-width:760px){.bold-case{grid-template-columns:1fr;gap:12px}}
+.bold-footer{border-top:2px solid var(--ink);margin-top:clamp(60px,10vh,120px);padding:clamp(48px,8vh,90px) clamp(20px,3vw,46px);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;max-width:1440px;margin-inline:auto}
+.bold-footer-back{font-family:var(--display);text-transform:uppercase;font-weight:400;letter-spacing:-.02em;line-height:.85;font-size:clamp(28px,4.4vw,58px);display:inline-flex;align-items:center;gap:.3em;color:var(--ink);transition:transform .3s var(--ease)}
+.bold-footer-back:hover{transform:translateX(-8px)}
+.bold-footer-meta{font-family:var(--sans);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:12px;opacity:.5}
+`;
 
-  const usedMB = useMemo(
-    () => storage.active + storage.ready + storage.partial,
-    [storage],
-  );
-
-  const toggle = useCallback((id: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }, []);
-
-  const toggleAll = useCallback((ids: string[], value: boolean) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      for (const id of ids) {
-        if (value) next.add(id);
-        else next.delete(id);
-      }
-      return next;
-    });
-  }, []);
-
-  const closeModal = useCallback(() => {
-    setPlan(null);
-    setPending(null);
-  }, []);
-
-  /** Scenario 3 — build a deletion plan from the current table selection. */
-  const confirmFromSelection = useCallback(() => {
-    const selectedRows = rows.filter((r) => selected.has(r.id));
-    if (selectedRows.length === 0) return;
-
-    const deletionRows = [...selectedRows];
-    let referenced: DeletePlan["referenced"];
-
-    // A selected digest referenced by another must drag that dependency along.
-    for (const r of selectedRows) {
-      if (!r.referencedBy) continue;
-      const dep = rows.find(
-        (x) => x.digest === r.referencedBy && !deletionRows.some((d) => d.id === x.id),
-      );
-      if (dep) {
-        deletionRows.push(dep);
-        referenced = { target: r.digest, by: r.referencedBy };
-      }
-    }
-
-    const freedMB = deletionRows.reduce((sum, r) => sum + r.sizeMB, 0);
-
-    setPlan({
-      variant: deletionRows.length === 1 ? "single" : "multi",
-      rows: deletionRows.map((r) => ({
-        digest: r.digest,
-        tags: r.tags,
-        sizeMB: r.sizeMB,
-        lastPushed: r.lastPushed,
-      })),
-      freedMB,
-      referenced,
-      affectedTags: uniqueTags(deletionRows),
-    });
-    setPending({ removeDigestIds: deletionRows.map((r) => r.id), freedMB });
-  }, [rows, selected]);
-
-  /** Scenario 2 — delete a single suggested-cleanup digest. */
-  const confirmFromSuggested = useCallback((item: SuggestedItem) => {
-    setPlan({
-      variant: "single",
-      rows: [
-        {
-          digest: item.digest,
-          tags: [item.tag],
-          sizeMB: item.sizeMB,
-          lastPushed: item.lastPushed,
-        },
-      ],
-      freedMB: item.sizeMB,
-      affectedTags: [item.tag],
-    });
-    setPending({ removeSuggestedId: item.id, freedMB: item.sizeMB });
-  }, []);
-
-  const executeDeletion = useCallback(() => {
-    if (!pending) return;
-    const { removeDigestIds, removeSuggestedId, freedMB } = pending;
-
-    if (removeSuggestedId) {
-      setSuggested((prev) => prev.filter((s) => s.id !== removeSuggestedId));
-    }
-    if (removeDigestIds) {
-      const idSet = new Set(removeDigestIds);
-      setRows((prev) => prev.filter((r) => !idSet.has(r.id)));
-      setSelected(new Set());
-    }
-
-    closeModal();
-    setToast(
-      <>
-        Deletion confirmed: removed successfully,{" "}
-        <strong className="font-medium text-ink">{formatSize(freedMB)} freed</strong>.
-      </>,
-    );
-  }, [pending, closeModal]);
+export default function LandingPage() {
+  const ext = PORTFOLIO_URL || null;
 
   return (
-    <div className="flex min-h-full flex-col bg-white">
-      <TopNav />
-      <div className="flex flex-1">
-        <AppSidebar active="Repositories" />
-        <main className="min-w-0 flex-1">
-          <div className="mx-auto max-w-[1180px] px-8 pb-4">
-            <RepoHeader />
-            <StorageOverview
-              usedMB={usedMB}
-              totalMB={STORAGE_TOTAL_MB}
-              counts={counts}
-              storage={storage}
-            />
-            <SuggestedCleanup items={suggested} onDelete={confirmFromSuggested} />
-            <DigestList
-              digests={rows}
-              selected={selected}
-              onToggle={toggle}
-              onToggleAll={toggleAll}
-              onConfirmDelete={confirmFromSelection}
-            />
-            <Footer />
+    <div className="bold-root">
+      <style dangerouslySetInnerHTML={{ __html: css }} />
+
+      <nav className="bold-nav">
+        {ext ? (
+          <a className="bold-brand" href={ext}>
+            Sean Brady
+          </a>
+        ) : (
+          <span className="bold-brand">Sean Brady</span>
+        )}
+        {ext ? (
+          <a className="bold-pill" href={ext}>
+            Portfolio
+          </a>
+        ) : (
+          <button className="bold-pill" type="button">
+            Portfolio
+          </button>
+        )}
+      </nav>
+
+      <div className="bold-wrap">
+        <header className="bold-hero">
+          <p className="bold-eyebrow">Selected prototypes — 2026</p>
+          <h1 className="bold-title">Docker Hub, reimagined</h1>
+          <p className="bold-lead">
+            Two interactive UX explorations for Docker Hub — <b>storage cleanup</b> and{" "}
+            <b>pull analytics</b> — rebuilt as living prototypes with real, working
+            interactions. Pick one to dive in.
+          </p>
+        </header>
+
+        <section className="bold-section">
+          <p className="bold-sublabel">Prototypes</p>
+          <div className="bold-rows">
+            <Link className="bold-case" href="/image-management">
+              <span className="bold-ct">Image Management</span>
+              <p className="bold-cd">
+                Repository storage cleanup with live per-category metrics, suggested
+                cleanup, and a dependency-aware multi-select delete flow that updates
+                storage in real time.
+              </p>
+            </Link>
+            <Link className="bold-case" href="/usage/pulls">
+              <span className="bold-ct">Usage · Pulls</span>
+              <p className="bold-cd">
+                A pull analytics dashboard — KPI strip, pulls over time, and top
+                repositories &amp; users, with interactive hover tooltips across every
+                chart.
+              </p>
+            </Link>
           </div>
-        </main>
+        </section>
       </div>
 
-      <DeleteModal plan={plan} onCancel={closeModal} onConfirm={executeDeletion} />
-      {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
+      <footer className="bold-footer">
+        {ext ? (
+          <a className="bold-footer-back" href={ext}>
+            ← Back
+          </a>
+        ) : (
+          <span className="bold-footer-back">← Back</span>
+        )}
+        <span className="bold-footer-meta">Sean Brady · Docker Hub · 2026</span>
+      </footer>
     </div>
   );
 }

@@ -20,7 +20,7 @@ interface RailItem {
 }
 
 const items: RailItem[] = [
-  { key: "Repositories", label: "Repositories", icon: List, href: "/" },
+  { key: "Repositories", label: "Repositories", icon: List, href: "/image-management" },
   { key: "Usage", label: "Usage", icon: Activity, href: "/usage/pulls" },
   { key: "Insights", label: "Insights & analytics", icon: ChartLine },
   { key: "Teams", label: "Teams", icon: Users },

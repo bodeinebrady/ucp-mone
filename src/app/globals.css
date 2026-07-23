@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+/* Bold landing design system fonts (Tanker + Cabinet Grotesk). Declared here so
+   they load early in <head>, not inside the landing component. App served at
+   root, so no base-path prefix on the urls. */
+@font-face {
+  font-family: "Tanker";
+  src: url("/fonts/tanker.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/fonts/cabinet-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/fonts/cabinet-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/fonts/cabinet-800.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   /* Brand — aligned with @docker/trident dds tokens (primary blue = #1d63ed). */
   --color-docker-blue: #1d63ed;
