@@ -28,11 +28,9 @@ export function SuggestedCleanup({ items, onDelete }: Props) {
               <p className="mt-2 text-xs text-muted">
                 Image · {formatSize(item.sizeMB)} · Last Pushed {item.lastPushed}
               </p>
-              <div className="mt-3">
-                <TagChip>{item.tag}</TagChip>
-              </div>
             </div>
-            <div className="flex justify-end border-t border-hairline px-3 py-2">
+            <div className="flex items-center justify-between border-t border-hairline px-3 py-2">
+              <TagChip>{item.tag}</TagChip>
               <button
                 onClick={() => onDelete(item)}
                 aria-label={`Delete ${item.digest}`}
