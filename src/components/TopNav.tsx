@@ -39,14 +39,8 @@ export function TopNav() {
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-[#1d63ed] to-[#7d2eff] text-white">
       <div className="flex min-h-16 items-center px-8">
-        {/* Left — back-to-landing, logo + tabs */}
+        {/* Left — logo + tabs */}
         <div className="flex h-16 flex-1 items-stretch">
-          <Link
-            href="/"
-            className="mr-6 flex shrink-0 items-center gap-1.5 self-center rounded-md border border-white/25 py-1.5 pl-2.5 pr-3 text-sm font-medium text-white/90 transition hover:bg-white/10 hover:text-white"
-          >
-            <span aria-hidden>←</span> Prototype
-          </Link>
           <Link href="/" className="mr-8 flex shrink-0 items-center gap-3">
             <DockerMark />
             <span className="text-[15px] text-white" style={{ fontWeight: 680, letterSpacing: "-0.01em" }}>
