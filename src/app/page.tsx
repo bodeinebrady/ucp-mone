@@ -6,9 +6,9 @@ export const metadata = {
     "Monetizing Docker Hub's pull and storage usage — surfacing usage, showing consumption, and giving admins the tools to clean house.",
 };
 
-// If set, the brand + pill + footer "Back" link out to the portfolio; when empty
-// they render inert (no navigation), per spec.
-const PORTFOLIO_URL = "";
+// The brand + footer "Back" link out to the portfolio. If empty they render
+// inert (no navigation), per spec.
+const PORTFOLIO_URL = "https://portfolio-ten-blue-75.vercel.app/resolvability/";
 
 // Design tokens — single source of truth for the bold design system.
 const T = {
@@ -69,15 +69,6 @@ export default function LandingPage() {
           </a>
         ) : (
           <span className="bold-brand">Sean Brady</span>
-        )}
-        {ext ? (
-          <a className="bold-pill" href={ext}>
-            Portfolio
-          </a>
-        ) : (
-          <button className="bold-pill" type="button">
-            Portfolio
-          </button>
         )}
       </nav>
 
