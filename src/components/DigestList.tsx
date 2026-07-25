@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ArrowUpIcon, ChevronDownIcon, Dot, SearchIcon } from "./icons";
 import { TagChip } from "./TagChip";
-import { statusLabel, type Digest } from "@/lib/data";
+import { formatSize, statusLabel, type Digest } from "@/lib/data";
 
 interface Props {
   digests: Digest[];
@@ -104,6 +104,7 @@ export function DigestList({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder=""
+            aria-label="Search digests"
             className="h-full w-full rounded-md border border-hairline bg-white pl-10 pr-14 text-sm text-ink focus:border-docker-blue focus:outline-none focus:ring-1 focus:ring-docker-blue"
           />
           <kbd className="pointer-events-none absolute right-3 rounded border border-hairline bg-canvas px-1.5 py-0.5 font-mono text-[11px] text-muted">
@@ -190,11 +191,7 @@ export function DigestList({
                   </td>
                   <td className="py-3.5 pr-4 text-body">{d.manifestType}</td>
                   <td className="py-3.5 pr-4 text-body">{d.osArch}</td>
-                  <td className="py-3.5 pr-4 text-body">
-                    {d.sizeMB >= 1024
-                      ? `${(d.sizeMB / 1024).toFixed(1)} GB`
-                      : `${d.sizeMB} MB`}
-                  </td>
+                  <td className="py-3.5 pr-4 text-body">{formatSize(d.sizeMB)}</td>
                   <td className="py-3.5 pr-4 text-body">{d.lastPushed}</td>
                   <td className="py-3.5 pr-4 text-body">{d.lastPulled}</td>
                   <td className="py-3.5 pr-4">

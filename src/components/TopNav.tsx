@@ -38,21 +38,23 @@ function NavTab({ label, active = false }: { label: string; active?: boolean }) 
 export function TopNav() {
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-[#1d63ed] to-[#7d2eff] text-white">
-      <div className="flex min-h-16 items-center px-8">
+      <div className="flex min-h-16 items-center px-4 md:px-8">
         {/* Left — logo + tabs */}
-        <div className="flex h-16 flex-1 items-stretch">
-          <Link href="/" className="mr-8 flex shrink-0 items-center gap-3">
+        <div className="flex h-16 shrink-0 items-stretch md:flex-1">
+          <Link href="/" className="mr-4 flex shrink-0 items-center gap-3 md:mr-8">
             <DockerMark />
             <span className="text-[15px] text-white" style={{ fontWeight: 680, letterSpacing: "-0.01em" }}>
               Docker Hub
             </span>
           </Link>
-          <NavTab label="Explore" />
-          <NavTab label="My Hub" />
+          <div className="hidden items-stretch md:flex">
+            <NavTab label="Explore" />
+            <NavTab label="My Hub" />
+          </div>
         </div>
 
         {/* Center — search */}
-        <div className="mx-6 w-[480px] shrink-0">
+        <div className="mx-3 min-w-0 flex-1 md:mx-6 md:w-[480px] md:flex-none">
           <div className="flex h-9 items-center gap-2 rounded-md border border-white/[0.18] bg-white/[0.12] px-3">
             <Search size={16} className="shrink-0 text-white/50" />
             <input
@@ -64,7 +66,7 @@ export function TopNav() {
         </div>
 
         {/* Right — auth */}
-        <div className="flex flex-1 items-center justify-end gap-3">
+        <div className="flex shrink-0 items-center justify-end gap-3 md:flex-1">
           <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1d63ed] text-xs font-bold text-white">
             PT
           </div>

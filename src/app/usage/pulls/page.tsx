@@ -75,7 +75,7 @@ export default function PullsPage() {
       <div className="flex flex-1">
         <AppSidebar active="Usage" />
         <main className="min-w-0 flex-1">
-          <div className="mx-auto max-w-[1180px] px-8 py-7">
+          <div className="mx-auto max-w-[1180px] px-4 py-7 md:px-8">
             {/* Header */}
             <div className="flex items-start justify-between gap-6">
               <div>
@@ -111,13 +111,13 @@ export default function PullsPage() {
                 </div>
               </label>
 
-              <label className="block">
+              <div className="w-full sm:w-auto">
                 <span className="mb-1 block text-xs text-muted">Datespan</span>
-                <div className="flex h-10 w-[360px] items-center gap-2 rounded-md border border-hairline bg-white px-3.5 text-sm text-ink">
+                <div className="flex h-10 w-full items-center gap-2 rounded-md border border-hairline bg-white px-3.5 text-sm text-ink sm:w-[360px]">
                   <span className="flex-1 truncate">{kpis.datespan}</span>
                   <Calendar className="h-4 w-4 shrink-0 text-muted" />
                 </div>
-              </label>
+              </div>
             </div>
 
             {/* KPI strip */}
@@ -187,7 +187,7 @@ export default function PullsPage() {
                 title="Top repositories by pulls"
                 legend={<Legend series={repoSeries} />}
               >
-                <LineChart series={repoSeries} maxY={lineMaxY} yTicks={lineYTicks} />
+                <LineChart series={repoSeries} maxY={lineMaxY} yTicks={lineYTicks} ariaLabel="Top repositories by pulls" />
               </ChartCard>
 
               <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
@@ -215,7 +215,7 @@ export default function PullsPage() {
                 </div>
 
                 <ChartCard title="Top users by pulls" fill legend={<Legend series={userSeries} />}>
-                  <LineChart series={userSeries} maxY={lineMaxY} yTicks={lineYTicks} height={460} />
+                  <LineChart series={userSeries} maxY={lineMaxY} yTicks={lineYTicks} height={460} ariaLabel="Top users by pulls" />
                 </ChartCard>
               </div>
             </div>

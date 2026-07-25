@@ -77,7 +77,7 @@ export default function LandingPage() {
           <p className="bold-eyebrow">Lead Product Designer · Docker Hub · 2024</p>
           <h1 className="bold-title">Hub Monetization</h1>
           <p className="bold-lead">
-            Turning Hub's <b>5.5 PB of daily pulls</b> and <b>21 PB of private storage</b>{" "}
+            Turning Hub&rsquo;s <b>5.5 PB of daily pulls</b> and <b>21 PB of private storage</b>{" "}
             into revenue by surfacing usage, showing consumption, and giving admins tools
             to clean house, without alarming the 97% of users who were never affected.
           </p>

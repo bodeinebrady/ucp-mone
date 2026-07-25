@@ -189,11 +189,13 @@ export function LineChart({
   maxY,
   yTicks,
   height = 300,
+  ariaLabel = "Time series",
 }: {
   series: Series[];
   maxY: number;
   yTicks: number[];
   height?: number;
+  ariaLabel?: string;
 }) {
   const H = height;
   const bottom = PAD.t + plotHOf(H);
@@ -207,7 +209,7 @@ export function LineChart({
       onMouseMove={(e) => ref.current && setHover(indexFromEvent(e, ref.current, DAYS, false))}
       onMouseLeave={() => setHover(null)}
     >
-      <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label="Time series">
+      <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label={ariaLabel}>
         <Gridlines ticks={yTicks} maxY={maxY} h={H} />
         {hover !== null && (
           <line

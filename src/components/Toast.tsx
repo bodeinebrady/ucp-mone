@@ -12,7 +12,11 @@ export function Toast({ message, onDismiss }: Props) {
   }, [onDismiss]);
 
   return (
-    <div className="pointer-events-none fixed bottom-6 right-6 z-50 flex justify-end">
+    <div
+      className="pointer-events-none fixed bottom-6 right-6 z-50 flex justify-end"
+      role="status"
+      aria-live="polite"
+    >
       <div className="pointer-events-auto flex max-w-sm items-start gap-3 rounded-lg border border-hairline bg-white p-4 shadow-lg animate-[toastIn_180ms_ease-out]">
         <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ready/15 text-ready">
           <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none">

@@ -58,7 +58,7 @@ export const repoSeries: Series[] = [
   { label: "docker/audit-logs", color: "#e5484d", points: walk(102, 360_000, 120_000, 240_000, 455_000) },
   { label: "docker/accounts-api", color: "#8b5cf6", points: walk(103, 200_000, 120_000, 80_000, 320_000) },
   { label: "docker/accounts-api-thisi...", color: "#e8883a", points: walk(104, 330_000, 150_000, 200_000, 450_000) },
-  { label: "docker/admin-insights- lo...", color: "#14b8a6", points: walk(105, 95_000, 55_000, 45_000, 155_000) },
+  { label: "docker/admin-insights-lo...", color: "#14b8a6", points: walk(105, 95_000, 55_000, 45_000, 155_000) },
 ];
 
 // ── "Top users by pulls" — multi-line ────────────────────────────────────────

@@ -32,8 +32,8 @@ const items: RailItem[] = [
 
 /**
  * Collapsed icon rail, shared by every screen. `active` highlights the current
- * section; Repositories → "/" and Usage → "/usage/pulls" are wired for
- * click-through navigation between the prototypes.
+ * section; Repositories → "/image-management" and Usage → "/usage/pulls" are
+ * wired for click-through navigation between the prototypes.
  */
 export function AppSidebar({ active }: { active?: string }) {
   return (

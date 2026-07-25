@@ -29,7 +29,7 @@ export function StorageOverview({ usedMB, totalMB, counts, storage }: Props) {
 
   return (
     <section className="mt-6">
-      <div className="flex gap-14">
+      <div className="flex flex-wrap gap-x-14 gap-y-5">
         {/* Storage — first, styled the same as the metric cards */}
         <div>
           <div className="flex items-center gap-2">

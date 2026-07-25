@@ -28,13 +28,14 @@ interface Props {
 export function DeleteModal({ plan, onCancel, onConfirm }: Props) {
   useEffect(() => {
     if (!plan) return;
+    // Escape cancels. Deliberately no Enter-to-confirm — the confirm action is
+    // irreversible and shouldn't fire from a stray keypress.
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCancel();
-      if (e.key === "Enter") onConfirm();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [plan, onCancel, onConfirm]);
+  }, [plan, onCancel]);
 
   if (!plan) return null;
 
@@ -142,11 +143,7 @@ export function DeleteModal({ plan, onCancel, onConfirm }: Props) {
                       ))}
                     </div>
                   </td>
-                  <td className="py-3 pr-4 text-body">
-                    {row.sizeMB >= 1024
-                      ? `${(row.sizeMB / 1024).toFixed(1)} GB`
-                      : `${row.sizeMB} MB`}
-                  </td>
+                  <td className="py-3 pr-4 text-body">{formatSize(row.sizeMB)}</td>
                   <td className="py-3 pr-4 text-body">{row.lastPushed}</td>
                   <td className="py-3 text-body">Full storage reclaim</td>
                 </tr>

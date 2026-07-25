@@ -116,13 +116,12 @@ export default function Home() {
     // A selected digest referenced by another must drag that dependency along.
     for (const r of selectedRows) {
       if (!r.referencedBy) continue;
+      // Surface the dependency note even if the referenced digest is already selected.
+      if (!referenced) referenced = { target: r.digest, by: r.referencedBy };
       const dep = rows.find(
         (x) => x.digest === r.referencedBy && !deletionRows.some((d) => d.id === x.id),
       );
-      if (dep) {
-        deletionRows.push(dep);
-        referenced = { target: r.digest, by: r.referencedBy };
-      }
+      if (dep) deletionRows.push(dep);
     }
 
     const freedMB = deletionRows.reduce((sum, r) => sum + r.sizeMB, 0);
@@ -188,7 +187,7 @@ export default function Home() {
       <div className="flex flex-1">
         <AppSidebar active="Repositories" />
         <main className="min-w-0 flex-1">
-          <div className="mx-auto max-w-[1180px] px-8 pb-4">
+          <div className="mx-auto max-w-[1180px] px-4 pb-4 md:px-8">
             <RepoHeader />
             <StorageOverview
               usedMB={usedMB}
